@@ -1,0 +1,46 @@
+name: sp-orchestrator-api-poc
+id: ari:cloud:compass:17b02e60-fdb1-4adb-babd-07075fcfeb4d:component/d043ac6d-044a-4240-ab87-22bddbfeb32b/ca3ac03e-071b-4dc9-9b23-2afc4c5cb9e1
+description: POC de orquestador de stored procedures
+configVersion: 1
+typeId: SERVICE
+fields:
+  tier: 4
+links:
+  - name: null
+    type: REPOSITORY
+    url: https://github.com/ueno-tecnologia-org/sp-orchestrator-api-poc
+relationships:
+  DEPENDS_ON: []
+labels:
+  - source:github
+customFields:
+  - name: CI/CD
+    type: multi_select
+    value: null
+  - name: Onprem
+    type: boolean
+    value: false
+  - name: 'Servidores Produccion:'
+    type: text
+    value: null
+  - name: Servidores Producción
+    type: text
+    value: null
+  - name: Servidores SDLC
+    type: text
+    value: null
+  - name: Staging
+    type: text
+    value: null
+  - name: Variables entorno opcionales
+    type: text
+    value: null
+  - name: Variables entorno requeridas
+    type: text
+    value: null
+  - name: Vincular un APM a New Relic
+    type: text
+    value: null
+  - name: puerto
+    type: text
+    value: null
