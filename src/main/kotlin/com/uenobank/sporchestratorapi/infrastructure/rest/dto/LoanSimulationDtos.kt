@@ -1,4 +1,4 @@
-package com.uenobank.sporchestratorapi.infrastructure.adapters.inbound.rest.dto
+package com.uenobank.sporchestratorapi.infrastructure.rest.dto
 
 import io.swagger.v3.oas.annotations.media.Schema
 import jakarta.validation.constraints.*

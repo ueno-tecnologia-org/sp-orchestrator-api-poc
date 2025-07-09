@@ -1,11 +1,12 @@
-package com.uenobank.sporchestratorapi.infrastructure.adapters.inbound.rest
+package com.uenobank.sporchestratorapi.infrastructure.rest
 
-import com.uenobank.sporchestratorapi.domain.usecases.SimulateLoanUseCase
+import com.uenobank.sporchestratorapi.business.ports.SimulateLoanPort
+import com.uenobank.sporchestratorapi.business.ports.GetCurrencyPort
 import com.uenobank.sporchestratorapi.domain.repositories.StoredProcedureRepository
-import com.uenobank.sporchestratorapi.infrastructure.adapters.inbound.rest.dto.SimulateLoanRequestDto
-import com.uenobank.sporchestratorapi.infrastructure.adapters.inbound.rest.dto.SimulateLoanResponseDto
-import com.uenobank.sporchestratorapi.infrastructure.adapters.inbound.rest.mapper.LoanSimulationRequestMapper
-import com.uenobank.sporchestratorapi.infrastructure.adapters.inbound.rest.mapper.LoanSimulationResponseMapper
+import com.uenobank.sporchestratorapi.infrastructure.rest.dto.SimulateLoanRequestDto
+import com.uenobank.sporchestratorapi.infrastructure.rest.dto.SimulateLoanResponseDto
+import com.uenobank.sporchestratorapi.infrastructure.rest.mapper.LoanSimulationRequestMapper
+import com.uenobank.sporchestratorapi.infrastructure.rest.mapper.LoanSimulationResponseMapper
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
@@ -14,6 +15,7 @@ import jakarta.validation.Valid
 import org.slf4j.LoggerFactory
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import java.math.BigDecimal
 import java.sql.Date
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -22,10 +24,10 @@ import java.time.format.DateTimeFormatter
 @RequestMapping("/simulation")
 @Tag(name = "Loan Simulation", description = "API para simulaciones de préstamos")
 class LoanSimulationController(
-    private val simulateLoanUseCase: SimulateLoanUseCase,
+    private val simulateLoanPort: SimulateLoanPort,
+    private val getCurrencyPort: GetCurrencyPort,
     private val requestMapper: LoanSimulationRequestMapper,
-    private val responseMapper: LoanSimulationResponseMapper,
-    private val storedProcedureRepository: StoredProcedureRepository
+    private val responseMapper: LoanSimulationResponseMapper
 ) {
 
     private val logger = LoggerFactory.getLogger(LoanSimulationController::class.java)
@@ -57,8 +59,8 @@ class LoanSimulationController(
             // Map request to domain
             val domainRequest = requestMapper.toDomain(request)
 
-            // Execute simulation
-            val result = simulateLoanUseCase.execute(
+            // Execute simulation through the port
+            val result = simulateLoanPort.handleLoanSimulation(
                 request = domainRequest,
                 expirationDate = expirationDate,
                 currency = request.currency,
@@ -80,7 +82,7 @@ class LoanSimulationController(
             logger.error("Error processing loan simulation request for person: ${request.personCode}", exception)
 
             val errorResponse = SimulateLoanResponseDto(
-                installmentAmount = java.math.BigDecimal.ZERO,
+                installmentAmount = BigDecimal.ZERO,
                 errorCode = "PROCESSING_ERROR",
                 errorMessage = exception.message ?: "Unknown error during simulation processing",
                 success = false
@@ -92,7 +94,7 @@ class LoanSimulationController(
 
     @GetMapping("/currency/{isoCode}")
     @Operation(
-        summary = "Obtener moneda por código ISO",
+        summary = "Obtener moneda por c��digo ISO",
         description = "Obtiene la información de una moneda utilizando su código ISO"
     )
     @ApiResponses(
@@ -109,21 +111,22 @@ class LoanSimulationController(
         logger.info("Received request to get currency for ISO code: {}", isoCode)
 
         return try {
-            val currency = storedProcedureRepository.getCurrencyByISOCode(isoCode)
+            val result = getCurrencyPort.getCurrencyByISOCode(isoCode)
 
-            if (currency != null) {
-                logger.info("Currency found for ISO code {}: {}", isoCode, currency)
+            if (result.errorCode == null) {
+                logger.info("Currency found for ISO code {}: {}", isoCode, result.name)
                 ResponseEntity.ok(mapOf(
                     "success" to true,
-                    "isoCode" to isoCode,
-                    "currency" to currency
+                    "isoCode" to result.isoCode,
+                    "currency" to result.name
                 ))
             } else {
                 logger.warn("Currency not found for ISO code: {}", isoCode)
                 ResponseEntity.status(404).body(mapOf(
                     "success" to false,
-                    "isoCode" to isoCode,
-                    "message" to "Currency not found for ISO code: $isoCode"
+                    "isoCode" to result.isoCode,
+                    "error" to result.errorCode,
+                    "message" to result.errorMessage
                 ))
             }
 

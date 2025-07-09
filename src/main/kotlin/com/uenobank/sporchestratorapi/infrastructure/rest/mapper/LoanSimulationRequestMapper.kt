@@ -1,4 +1,4 @@
-package com.uenobank.sporchestratorapi.infrastructure.adapters.inbound.rest.mapper
+package com.uenobank.sporchestratorapi.infrastructure.rest.mapper
 
 import com.uenobank.sporchestratorapi.domain.entities.CommonLoanSimulation
 import org.springframework.stereotype.Component
