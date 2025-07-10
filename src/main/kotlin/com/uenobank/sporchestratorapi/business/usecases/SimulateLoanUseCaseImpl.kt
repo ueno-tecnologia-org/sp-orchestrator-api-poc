@@ -1,7 +1,7 @@
 package com.uenobank.sporchestratorapi.business.usecases
 
-import com.uenobank.sporchestratorapi.domain.entities.LoanSimulation
-import com.uenobank.sporchestratorapi.domain.entities.CommonLoanSimulation
+import com.uenobank.sporchestratorapi.domain.entities.Simulation
+import com.uenobank.sporchestratorapi.domain.entities.CommonSimulation
 import com.uenobank.sporchestratorapi.domain.repositories.StoredProcedureRepository
 import com.uenobank.sporchestratorapi.domain.usecases.SimulateLoanUseCase
 import kotlinx.coroutines.Dispatchers
@@ -21,11 +21,11 @@ class SimulateLoanUseCaseImpl(
     private val logger = LoggerFactory.getLogger(SimulateLoanUseCaseImpl::class.java)
 
     override suspend fun execute(
-        request: CommonLoanSimulation,
+        request: CommonSimulation,
         expirationDate: Date,
         currency: String,
         modality: Int
-    ): LoanSimulation = withContext(Dispatchers.IO) {
+    ): Simulation = withContext(Dispatchers.IO) {
 
         logger.info(
             "Executing loan simulation for person: ${request.personCode}, " +
@@ -48,7 +48,7 @@ class SimulateLoanUseCaseImpl(
 
         } catch (exception: Exception) {
             logger.error("Error executing loan simulation for person: ${request.personCode}", exception)
-            LoanSimulation(
+            Simulation(
                 installments = com.uenobank.sporchestratorapi.domain.entities.AmountInstallment(java.math.BigDecimal.ZERO),
                 errorCode = "SIMULATION_ERROR",
                 errorMessage = exception.message ?: "Unknown error during simulation"

@@ -111,6 +111,6 @@ cache-config:
     - name: currency
       ttl-seconds: 5
       max-size: 50
-    - name: loanSimulation
+    - name: Simulation
       ttl-seconds: 10
       max-size: 5000

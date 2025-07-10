@@ -1,12 +1,13 @@
 package com.uenobank.sporchestratorapi.infrastructure.rest.mapper
 
-import com.uenobank.sporchestratorapi.domain.entities.LoanSimulation
+import com.uenobank.sporchestratorapi.domain.entities.Simulation
+import com.uenobank.sporchestratorapi.infrastructure.rest.dto.SimulateLoanResponseDto
 import org.springframework.stereotype.Component
 
 @Component
-class LoanSimulationResponseMapper {
+class SimulationResponseMapper {
 
-    fun toDto(domainResult: LoanSimulation): SimulateLoanResponseDto {
+    fun toDto(domainResult: Simulation): SimulateLoanResponseDto {
         return SimulateLoanResponseDto(
             installmentAmount = domainResult.installments.value,
             errorCode = domainResult.errorCode,

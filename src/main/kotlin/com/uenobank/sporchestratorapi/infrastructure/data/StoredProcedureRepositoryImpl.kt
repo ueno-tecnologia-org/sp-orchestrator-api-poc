@@ -5,7 +5,7 @@ import com.uenobank.sporchestratorapi.infrastructure.data.constants.StoredProced
 import com.uenobank.sporchestratorapi.infrastructure.data.constants.StoredProcedureConstants.SimulationDBConstants.P_CLAVE_DEFAULT
 import com.uenobank.sporchestratorapi.infrastructure.data.constants.StoredProcedureConstants.SimulationDBConstants.P_GRABAR_DEFAULT
 import com.uenobank.sporchestratorapi.infrastructure.data.constants.StoredProcedureExecutor
-import com.uenobank.sporchestratorapi.domain.entities.LoanSimulation
+import com.uenobank.sporchestratorapi.domain.entities.Simulation
 import com.uenobank.sporchestratorapi.domain.entities.AmountInstallment
 import com.uenobank.sporchestratorapi.domain.repositories.StoredProcedureRepository
 import com.uenobank.sporchestratorapi.infrastructure.data.constants.NullParameterType
@@ -13,7 +13,7 @@ import com.uenobank.sporchestratorapi.infrastructure.data.constants.StoredProced
 import com.uenobank.sporchestratorapi.infrastructure.data.constants.StoredProcedureConstants.SimulationDBConstants.P_MTO_CONSOLIDADO_DEFAULT
 import com.uenobank.sporchestratorapi.infrastructure.exceptions.CoreBankingException
 import com.uenobank.sporchestratorapi.infrastructure.exceptions.DatabaseValidationException
-import com.uenobank.sporchestratorapi.infrastructure.exceptions.LoanSimulationLoopLimitExceededException
+import com.uenobank.sporchestratorapi.infrastructure.exceptions.SimulationLoopLimitExceededException
 import io.github.resilience4j.bulkhead.annotation.Bulkhead
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker
 import io.github.resilience4j.ratelimiter.annotation.RateLimiter
@@ -77,7 +77,7 @@ class StoredProcedureRepositoryImpl(
         currency: String,
         modality: Int,
         requestId: Int?
-    ): LoanSimulation {
+    ): Simulation {
         return try {
             // Define input parameters with explicit Any type casting
             val inputParameters = listOf<Any?>(
@@ -117,7 +117,7 @@ class StoredProcedureRepositoryImpl(
             if (codError == 22) {
                 val errorMessage = "Simulation failed for personCode: $personCode, amount: $amount, installments: $installments, dueDate: $expirationDate. With error code: $codError and message: $message"
                 logger.error(errorMessage)
-                throw LoanSimulationLoopLimitExceededException(errorMessage)
+                throw SimulationLoopLimitExceededException(errorMessage)
             }
             if (codError != 0) {
                 val errorMessage = "Simulation failed for personCode: $personCode, amount: $amount, installments: $installments, dueDate: $expirationDate. With error code: $codError and message: $message"
@@ -128,7 +128,7 @@ class StoredProcedureRepositoryImpl(
                 val request = requestId?.toString() ?: "0"
                 logger.info("Simulation successful for personCode: {}, request: {}, amountInstallment: {}", personCode, request, amountInstallment)
 
-                LoanSimulation(
+                Simulation(
                     installments = AmountInstallment(amountInstallment),
                     errorCode = null,
                     errorMessage = null
@@ -159,7 +159,7 @@ class StoredProcedureRepositoryImpl(
         modality: Int,
         requestId: Int?,
         ex: Exception
-    ): LoanSimulation {
+    ): Simulation {
         return fallbackService.simulateFallback(personCode, ex)
     }
 

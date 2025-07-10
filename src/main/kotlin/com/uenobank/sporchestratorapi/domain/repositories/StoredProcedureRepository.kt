@@ -1,6 +1,6 @@
 package com.uenobank.sporchestratorapi.domain.repositories
 
-import com.uenobank.sporchestratorapi.domain.entities.LoanSimulation
+import com.uenobank.sporchestratorapi.domain.entities.Simulation
 import java.math.BigDecimal
 import java.sql.Date
 
@@ -17,5 +17,5 @@ interface StoredProcedureRepository {
         currency: String,
         modality: Int,
         requestId: Int? = null
-    ): LoanSimulation
+    ): Simulation
 }

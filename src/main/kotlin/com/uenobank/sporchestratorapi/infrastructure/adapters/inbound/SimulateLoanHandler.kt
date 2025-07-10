@@ -1,8 +1,8 @@
 package com.uenobank.sporchestratorapi.infrastructure.adapters.inbound
 
 import com.uenobank.sporchestratorapi.business.ports.SimulateLoanPort
-import com.uenobank.sporchestratorapi.domain.entities.LoanSimulation
-import com.uenobank.sporchestratorapi.domain.entities.CommonLoanSimulation
+import com.uenobank.sporchestratorapi.domain.entities.Simulation
+import com.uenobank.sporchestratorapi.domain.entities.CommonSimulation
 import com.uenobank.sporchestratorapi.domain.usecases.SimulateLoanUseCase
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
@@ -19,12 +19,12 @@ class SimulateLoanHandler(
 
     private val logger = LoggerFactory.getLogger(SimulateLoanHandler::class.java)
 
-    override suspend fun handleLoanSimulation(
-        request: CommonLoanSimulation,
+    override suspend fun handleSimulation(
+        request: CommonSimulation,
         expirationDate: Date,
         currency: String,
         modality: Int
-    ): LoanSimulation {
+    ): Simulation {
 
         logger.info("Handling loan simulation request for person: ${request.personCode}")
 

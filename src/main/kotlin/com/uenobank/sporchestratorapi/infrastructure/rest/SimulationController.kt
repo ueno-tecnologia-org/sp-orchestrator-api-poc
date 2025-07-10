@@ -2,11 +2,10 @@ package com.uenobank.sporchestratorapi.infrastructure.rest
 
 import com.uenobank.sporchestratorapi.business.ports.SimulateLoanPort
 import com.uenobank.sporchestratorapi.business.ports.GetCurrencyPort
-import com.uenobank.sporchestratorapi.domain.repositories.StoredProcedureRepository
 import com.uenobank.sporchestratorapi.infrastructure.rest.dto.SimulateLoanRequestDto
 import com.uenobank.sporchestratorapi.infrastructure.rest.dto.SimulateLoanResponseDto
-import com.uenobank.sporchestratorapi.infrastructure.rest.mapper.LoanSimulationRequestMapper
-import com.uenobank.sporchestratorapi.infrastructure.rest.mapper.LoanSimulationResponseMapper
+import com.uenobank.sporchestratorapi.infrastructure.rest.mapper.SimulationRequestMapper
+import com.uenobank.sporchestratorapi.infrastructure.rest.mapper.SimulationResponseMapper
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
@@ -22,15 +21,15 @@ import java.time.format.DateTimeFormatter
 
 @RestController
 @RequestMapping("/simulation")
-@Tag(name = "Loan Simulation", description = "API para simulaciones de préstamos")
-class LoanSimulationController(
+@Tag(name = "Simulation", description = "API para simulaciones de préstamos")
+class SimulationController(
     private val simulateLoanPort: SimulateLoanPort,
     private val getCurrencyPort: GetCurrencyPort,
-    private val requestMapper: LoanSimulationRequestMapper,
-    private val responseMapper: LoanSimulationResponseMapper
+    private val requestMapper: SimulationRequestMapper,
+    private val responseMapper: SimulationResponseMapper
 ) {
 
-    private val logger = LoggerFactory.getLogger(LoanSimulationController::class.java)
+    private val logger = LoggerFactory.getLogger(SimulationController::class.java)
 
     @PostMapping("/")
     @Operation(
@@ -60,7 +59,7 @@ class LoanSimulationController(
             val domainRequest = requestMapper.toDomain(request)
 
             // Execute simulation through the port
-            val result = simulateLoanPort.handleLoanSimulation(
+            val result = simulateLoanPort.handleSimulation(
                 request = domainRequest,
                 expirationDate = expirationDate,
                 currency = request.currency,

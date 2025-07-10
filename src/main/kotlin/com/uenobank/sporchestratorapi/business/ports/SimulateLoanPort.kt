@@ -1,7 +1,7 @@
 package com.uenobank.sporchestratorapi.business.ports
 
-import com.uenobank.sporchestratorapi.domain.entities.LoanSimulation
-import com.uenobank.sporchestratorapi.domain.entities.CommonLoanSimulation
+import com.uenobank.sporchestratorapi.domain.entities.Simulation
+import com.uenobank.sporchestratorapi.domain.entities.CommonSimulation
 import java.sql.Date
 
 /**
@@ -15,12 +15,12 @@ interface SimulateLoanPort {
      * @param expirationDate Loan expiration date
      * @param currency Currency code
      * @param modality Loan modality
-     * @return LoanSimulation result
+     * @return Simulation result
      */
-    suspend fun handleLoanSimulation(
-        request: CommonLoanSimulation,
+    suspend fun handleSimulation(
+        request: CommonSimulation,
         expirationDate: Date,
         currency: String,
         modality: Int
-    ): LoanSimulation
+    ): Simulation
 }

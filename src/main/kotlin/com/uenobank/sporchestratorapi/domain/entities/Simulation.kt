@@ -5,7 +5,8 @@ import java.math.BigDecimal
 /**
  * Domain entity representing a loan simulation result
  */
-data class LoanSimulation(
+data class
+Simulation(
     val installments: AmountInstallment,
     val errorCode: String? = null,
     val errorMessage: String? = null
@@ -20,7 +21,7 @@ value class AmountInstallment (val value: BigDecimal)
 /**
  * Common loan simulation parameters
  */
-data class CommonLoanSimulation(
+data class CommonSimulation(
     val personCode: String,
     val requestId: String,
     val amount: BigDecimal,

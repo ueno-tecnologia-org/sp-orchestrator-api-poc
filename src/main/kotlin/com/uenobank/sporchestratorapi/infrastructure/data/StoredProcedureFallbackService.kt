@@ -1,6 +1,6 @@
 package com.uenobank.sporchestratorapi.infrastructure.data
 
-import com.uenobank.sporchestratorapi.domain.entities.LoanSimulation
+import com.uenobank.sporchestratorapi.domain.entities.Simulation
 import com.uenobank.sporchestratorapi.domain.entities.AmountInstallment
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
@@ -25,9 +25,9 @@ class StoredProcedureFallbackService {
     fun simulateFallback(
         personCode: String,
         ex: Exception
-    ): LoanSimulation {
+    ): Simulation {
         logger.warn("Loan simulation service fallback triggered for personCode: {} due to: {}", personCode, ex.message)
-        return LoanSimulation(
+        return Simulation(
             installments = AmountInstallment(BigDecimal.ZERO),
             errorCode = null,
             errorMessage = "Service temporarily unavailable. Please try again later."
@@ -41,9 +41,9 @@ class StoredProcedureFallbackService {
         personCode: String,
         customMessage: String,
         ex: Exception
-    ): LoanSimulation {
+    ): Simulation {
         logger.warn("Loan simulation service fallback triggered for personCode: {} due to: {}", personCode, ex.message)
-        return LoanSimulation(
+        return Simulation(
             installments = AmountInstallment(BigDecimal.ZERO),
             errorCode = null,
             errorMessage = customMessage

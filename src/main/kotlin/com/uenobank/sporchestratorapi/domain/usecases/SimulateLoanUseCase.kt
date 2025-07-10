@@ -1,7 +1,7 @@
 package com.uenobank.sporchestratorapi.domain.usecases
 
-import com.uenobank.sporchestratorapi.domain.entities.LoanSimulation
-import com.uenobank.sporchestratorapi.domain.entities.CommonLoanSimulation
+import com.uenobank.sporchestratorapi.domain.entities.Simulation
+import com.uenobank.sporchestratorapi.domain.entities.CommonSimulation
 import java.sql.Date
 
 /**
@@ -14,12 +14,12 @@ interface SimulateLoanUseCase {
      * @param expirationDate Loan expiration date
      * @param currency Currency code
      * @param modality Loan modality
-     * @return LoanSimulation result
+     * @return Simulation result
      */
     suspend fun execute(
-        request: CommonLoanSimulation,
+        request: CommonSimulation,
         expirationDate: Date,
         currency: String,
         modality: Int
-    ): LoanSimulation
+    ): Simulation
 }
